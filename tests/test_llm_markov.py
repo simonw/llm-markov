@@ -3,11 +3,28 @@ from llm.cli import cli
 import pytest
 
 
+@pytest.mark.parametrize("delay", [None, 0, 0.01, 0.03])
 @pytest.mark.parametrize("length", [10, 20])
-def test_markov_prompt(length):
+def test_markov_prompt(length, delay):
     runner = CliRunner()
     prompt = "the quick brown fox jumped over the lazy dog"
-    result = runner.invoke(cli, [prompt, "-m", "markov", "-o", "length", str(length)])
+    args = [
+        prompt,
+        "-m",
+        "markov",
+        "-o",
+        "length",
+        str(length),
+    ]
+    if delay is not None:
+        args.extend(
+            [
+                "-o",
+                "delay",
+                str(delay),
+            ]
+        )
+    result = runner.invoke(cli, args)
     assert result.exit_code == 0, result.output
     words = result.output.strip().split()
     # ['lazy', 'dog', 'brown', 'fox', 'jumped', 'over', 'the', 'quick', 'brown']

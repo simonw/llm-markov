@@ -23,6 +23,18 @@ This plugin adds a model called `markov`. You can execute it like this:
 llm -m markov "The quick brown fox jumps over the lazy dog"
 ```
 
+My default it will produce 100 words. You can control the number of words with the `-o number` option:
+
+```bash
+llm -m markov -o 20 "The quick brown fox jumps over the lazy dog"
+```
+A delay of 0.02s is simulated between each token. You can modify this using the `-o delay` option - to `0` to disable it, or some other floating point number of seconds to customize it:
+
+```bash
+llm -m markov "The quick brown fox jumps over the lazy dog" -o delay 0
+llm -m markov "The quick brown fox jumps over the lazy dog" -o delay 0.1 -o length 20
+```
+
 ## Development
 
 To set up this plugin locally, first checkout the code. Then create a new virtual environment:

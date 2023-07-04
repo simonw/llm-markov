@@ -7,6 +7,7 @@ from typing import Optional
 
 
 DEFAULT_LENGTH = 100
+DEFAULT_DELAY = 0.02
 
 
 @hookimpl
@@ -20,12 +21,16 @@ class Markov(Model):
 
     class Options(Model.Options):
         length: Optional[int] = None
+        delay: Optional[float] = None
 
     class Response(llm.Response):
         def iter_prompt(self):
             self._prompt_json = {"input": self.prompt.prompt}
 
             length = self.prompt.options.length or DEFAULT_LENGTH
+            delay = DEFAULT_DELAY
+            if self.prompt.options.delay is not None:
+                delay = self.prompt.options.delay
 
             transitions = defaultdict(list)
             all_words = self.prompt.prompt.split()
@@ -39,7 +44,7 @@ class Markov(Model):
                 else:
                     token = random.choice(all_words)
                 yield token + " "
-                time.sleep(0.02)
+                time.sleep(delay)
                 result.append(token)
             self._response_json = {
                 "generated": " ".join(result),
