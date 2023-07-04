@@ -32,6 +32,9 @@ class Markov(Model):
             if self.prompt.options.delay is not None:
                 delay = self.prompt.options.delay
 
+            if not self.stream:
+                delay = 0
+
             transitions = defaultdict(list)
             all_words = self.prompt.prompt.split()
             for i in range(len(all_words) - 1):
