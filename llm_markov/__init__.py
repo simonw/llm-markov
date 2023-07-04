@@ -3,6 +3,10 @@ import llm
 from collections import defaultdict
 import random
 import time
+from typing import Optional
+
+
+DEFAULT_LENGTH = 100
 
 
 @hookimpl
@@ -15,13 +19,13 @@ class Markov(Model):
     model_id = "markov"
 
     class Options(Model.Options):
-        length: int = 100
+        length: Optional[int] = None
 
     class Response(llm.Response):
         def iter_prompt(self):
             self._prompt_json = {"input": self.prompt.prompt}
 
-            length = self.prompt.options.length
+            length = self.prompt.options.length or DEFAULT_LENGTH
 
             transitions = defaultdict(list)
             all_words = self.prompt.prompt.split()
