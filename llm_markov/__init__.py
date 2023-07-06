@@ -24,19 +24,19 @@ class Markov(Model):
         delay: Optional[float] = None
 
     class Response(llm.Response):
-        def iter_prompt(self):
-            self._prompt_json = {"input": self.prompt.prompt}
+        def iter_prompt(self, prompt):
+            self._prompt_json = {"input": prompt.prompt}
 
-            length = self.prompt.options.length or DEFAULT_LENGTH
+            length = prompt.options.length or DEFAULT_LENGTH
             delay = DEFAULT_DELAY
-            if self.prompt.options.delay is not None:
-                delay = self.prompt.options.delay
+            if prompt.options.delay is not None:
+                delay = prompt.options.delay
 
             if not self.stream:
                 delay = 0
 
             transitions = defaultdict(list)
-            all_words = self.prompt.prompt.split()
+            all_words = prompt.prompt.split()
             for i in range(len(all_words) - 1):
                 transitions[all_words[i]].append(all_words[i + 1])
 
