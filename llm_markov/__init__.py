@@ -19,7 +19,7 @@ class Markov(Model):
     can_stream = True
     model_id = "markov"
 
-    class Options(Model.Options):
+    class Options(llm.Options):
         length: Optional[int] = None
         delay: Optional[float] = None
 
