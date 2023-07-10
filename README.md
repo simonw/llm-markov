@@ -5,7 +5,7 @@
 [![Tests](https://github.com/simonw/llm-markov/workflows/Test/badge.svg)](https://github.com/simonw/llm-markov/actions?query=workflow%3ATest)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/simonw/llm-markov/blob/main/LICENSE)
 
-Plugin for [LLM](https://llm.datasette.io/) adding a Markov chain generating model
+Plugin for [LLM](https://llm.datasette.io/) adding a [Markov chain](https://en.wikipedia.org/wiki/Markov_chain) generating model
 
 > ⚠️ This plugin is in development, and will not work until the next release of LLM. See [this PR](https://github.com/simonw/llm/pull/65) for progress.
 
