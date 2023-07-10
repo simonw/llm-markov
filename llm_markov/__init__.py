@@ -1,6 +1,7 @@
 from llm import Model, Prompt, hookimpl
 import llm
 from collections import defaultdict
+from pydantic import field_validator
 import random
 import time
 from typing import Optional
@@ -23,39 +24,45 @@ class Markov(Model):
         length: Optional[int] = None
         delay: Optional[float] = None
 
-    class Response(llm.Response):
-        def iter_prompt(self, prompt):
-            self._prompt_json = {"input": prompt.prompt}
+        @field_validator("length")
+        def validate_length(cls, length):
+            if length is None:
+                return None
+            if length < 2:
+                raise ValueError("length must be >= 2")
+            return length
 
-            length = prompt.options.length or DEFAULT_LENGTH
-            delay = DEFAULT_DELAY
-            if prompt.options.delay is not None:
-                delay = prompt.options.delay
+        @field_validator("delay")
+        def validate_delay(cls, delay):
+            if delay is None:
+                return None
+            if not 0 <= delay <= 10:
+                raise ValueError("delay must be between 0 and 10")
+            return delay
 
-            if not self.stream:
-                delay = 0
+    def execute(self, prompt, stream, response):
+        length = prompt.options.length or DEFAULT_LENGTH
+        delay = DEFAULT_DELAY
+        if prompt.options.delay is not None:
+            delay = prompt.options.delay
 
-            transitions = defaultdict(list)
-            all_words = prompt.prompt.split()
-            for i in range(len(all_words) - 1):
-                transitions[all_words[i]].append(all_words[i + 1])
+        if not stream:
+            delay = 0
 
-            result = [all_words[0]]
-            for _ in range(length):
-                if transitions[result[-1]]:
-                    token = random.choice(transitions[result[-1]])
-                else:
-                    token = random.choice(all_words)
-                yield token + " "
-                time.sleep(delay)
-                result.append(token)
-            self._response_json = {
-                "generated": " ".join(result),
-                "transitions": dict(transitions),
-            }
+        transitions = defaultdict(list)
+        all_words = prompt.prompt.split()
+        for i in range(len(all_words) - 1):
+            transitions[all_words[i]].append(all_words[i + 1])
 
-    def execute(self, prompt: Prompt, stream: bool = True) -> Response:
-        return self.Response(prompt, self, stream)
+        result = [all_words[0]]
+        for _ in range(length):
+            if transitions[result[-1]]:
+                token = random.choice(transitions[result[-1]])
+            else:
+                token = random.choice(all_words)
+            yield token + " "
+            time.sleep(delay)
+            result.append(token)
 
     def __str__(self):
         return "Markov: {}".format(self.model_id)
