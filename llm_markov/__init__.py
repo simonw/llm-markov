@@ -6,7 +6,6 @@ import random
 import time
 from typing import Optional
 
-
 DEFAULT_LENGTH = 100
 DEFAULT_DELAY = 0.02
 
@@ -40,7 +39,7 @@ class Markov(Model):
                 raise ValueError("delay must be between 0 and 10")
             return delay
 
-    def execute(self, prompt, stream, response):
+    def execute(self, prompt, stream, response, conversation):
         length = prompt.options.length or DEFAULT_LENGTH
         delay = DEFAULT_DELAY
         if prompt.options.delay is not None:
