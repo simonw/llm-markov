@@ -29,7 +29,7 @@ setup(
     version=VERSION,
     packages=["llm_markov"],
     entry_points={"llm": ["llm_markov = llm_markov"]},
-    install_requires=["llm"],
+    install_requires=["llm>=0.5"],
     extras_require={"test": ["pytest"]},
     python_requires=">=3.7",
 )

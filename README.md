@@ -7,14 +7,12 @@
 
 Plugin for [LLM](https://llm.datasette.io/) adding a [Markov chain](https://en.wikipedia.org/wiki/Markov_chain) generating model
 
-> ⚠️ This plugin is in development, and will not work until the next release of LLM. See [this PR](https://github.com/simonw/llm/pull/65) for progress.
-
 ## Installation
 
 Install this plugin in the same environment as LLM.
-
-    llm install llm-markov
-
+```bash
+llm install llm-markov
+```
 ## Usage
 
 This plugin adds a model called `markov`. You can execute it like this:
