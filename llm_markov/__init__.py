@@ -48,12 +48,23 @@ class Markov(Model):
         if not stream:
             delay = 0
 
+        if prompt.system:
+            corpus = prompt.system
+        else:
+            corpus = prompt.prompt
+
         transitions = defaultdict(list)
-        all_words = prompt.prompt.split()
+        all_words = corpus.split()
         for i in range(len(all_words) - 1):
             transitions[all_words[i]].append(all_words[i + 1])
 
-        result = [all_words[0]]
+        if prompt.system:
+            seed = prompt.prompt.split()
+            result = [*seed]
+        else:
+            seed = all_words[0]
+            result = [seed]
+
         for _ in range(length):
             if transitions[result[-1]]:
                 token = random.choice(transitions[result[-1]])
